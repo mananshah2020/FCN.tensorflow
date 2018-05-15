@@ -1,5 +1,6 @@
 import FCN
 import ConfigParser
+import tensorflow as tf
 
 config = ConfigParser.ConfigParser()
 config.read("settings.ini")
@@ -16,4 +17,4 @@ FCN.NUM_CLASSES = config.getint("FCN Settings", 'num_classes')
 FCN.IMAGE_WIDTH = config.getint("FCN Settings", 'image_width')
 FCN.IMAGE_HEIGHT = config.getint("FCN Settings", 'image_height')
 
-print FCN.FLAGS.batch_size
+tf.app.run(main=FCN.main)
