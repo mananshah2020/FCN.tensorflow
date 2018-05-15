@@ -17,4 +17,7 @@ FCN.NUM_CLASSES = config.getint("FCN Settings", 'num_classes')
 FCN.IMAGE_WIDTH = config.getint("FCN Settings", 'image_width')
 FCN.IMAGE_HEIGHT = config.getint("FCN Settings", 'image_height')
 
+FCN.FLAGS.data_dir = "/dataset"
+FCN.FLAGS.logs_dir = "/logs"
+
 tf.app.run(main=FCN.main)
