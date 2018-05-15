@@ -5,3 +5,4 @@ Model_zoo/*
 *.pyc
 dataset/*
 *.zip
+settings.ini
