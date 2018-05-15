@@ -1,16 +1,19 @@
 import FCN
-import configparser
+import ConfigParser
 
-config = configparser.ConfigParser()
+config = ConfigParser.ConfigParser()
 config.read("settings.ini")
 
 
-FCN.FLAGS.batch_size = config["FCN Settings"]['batch_size']
-FCN.FLAGS.learning_rate = config["FCN Settings"]['learning_rate']
-FCN.FLAGS.debug = config["FCN Settings"]['debug']
-FCN.FLAGS.image_augmentation = config["FCN Settings"]['image_augmentation']
-FCN.FLAGS.dropout = config["FCN Settings"]['dropout']
-FCN.FLAGS.mode = config["FCN Settings"]['mode']
-FCN.MAX_ITERATION = config["FCN Settings"]['max_iterations']
-FCN.NUM_CLASSES = config["FCN Settings"]['num_classes']
-FCN.IMAGE_WIDTH, FCN.IMAGE_HEIGHT = config["FCN Settings"]['image_size']
+FCN.FLAGS.batch_size = config.getint("FCN Settings", 'batch_size')
+FCN.FLAGS.learning_rate = config.getfloat("FCN Settings", 'learning_rate')
+FCN.FLAGS.debug = config.getboolean("FCN Settings", 'debug')
+FCN.FLAGS.image_augmentation = config.getboolean("FCN Settings", 'image_augmentation')
+FCN.FLAGS.dropout = config.getfloat("FCN Settings", 'dropout')
+FCN.FLAGS.mode = config.get("FCN Settings", 'mode')
+FCN.MAX_ITERATION = int(config.getfloat("FCN Settings", 'max_iterations')) #Allows for scientific notation, e.g. 1e4
+FCN.NUM_CLASSES = config.getint("FCN Settings", 'num_classes')
+FCN.IMAGE_WIDTH = config.getint("FCN Settings", 'image_width')
+FCN.IMAGE_HEIGHT = config.getint("FCN Settings", 'image_height')
+
+print FCN.FLAGS.batch_size

@@ -1,5 +1,4 @@
 import tensorflow as tf
-from tensorflow.contrib.data import Dataset, Iterator
 
 class DatasetReader:
     filenames = []
@@ -31,10 +30,10 @@ class DatasetReader:
 
         #tf_records_placeholder = tf.placeholder(self.records)
         if 'annotation' in self.records:
-            self.dataset = Dataset.from_tensor_slices((self.records['image'], self.records['filename'],
+            self.dataset = tf.data.Dataset.from_tensor_slices((self.records['image'], self.records['filename'],
                                                       self.records['annotation']))
         else:
-            self.dataset = Dataset.from_tensor_slices((self.records['image'], self.records['filename']))
+            self.dataset = tf.data.Dataset.from_tensor_slices((self.records['image'], self.records['filename']))
 
         self.dataset = self.dataset.map(self._input_parser)
         self.dataset = self.dataset.batch(batch_size)
