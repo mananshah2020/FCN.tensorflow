@@ -15,7 +15,7 @@ print client.containers.run(
     'fcn',
     volumes={data_dir: {'bind': '/dataset', 'mode': 'ro'}, model_dir: {'bind': '/logs', 'mode': 'rw'}},
     ports={6006:port},
-    command='python FCN_wrapper.py',
+    command='python FCN_wrapper.py > logs 2> logs.error',
     detach=False,
     auto_remove=True
 )
