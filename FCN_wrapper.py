@@ -1,6 +1,9 @@
 import FCN
 import ConfigParser
 import tensorflow as tf
+import os
+import threading
+
 
 config = ConfigParser.ConfigParser()
 config.read("settings.ini")
@@ -20,4 +23,16 @@ FCN.IMAGE_HEIGHT = config.getint("FCN Settings", 'image_height')
 FCN.FLAGS.data_dir = "/dataset"
 FCN.FLAGS.logs_dir = "/logs"
 
+
+
+#Based on https://stackoverflow.com/questions/42158694/how-to-run-tensorboard-from-python-scipt-in-virtualenv
+def launchTensorBoard():
+    os.system('tensorboard --logdir=' + FCN.FLAGS.logs_dir)
+    return
+
+t = threading.Thread(target=launchTensorBoard, args=([]))
+t.daemon = True
+t.start()
+
+print "Ran Tensorboard"
 tf.app.run(main=FCN.main)

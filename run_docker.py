@@ -15,7 +15,7 @@ print client.containers.run(
     'fcn',
     volumes={data_dir: {'bind': '/dataset', 'mode': 'ro'}, model_dir: {'bind': '/logs', 'mode': 'rw'}},
     ports={6006:port},
-    command=['tensorboard --logdir=/logs &', 'python FCN_wrapper.py'],
+    command='python FCN_wrapper.py',
     detach=False,
     auto_remove=True
 )
