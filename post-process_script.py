@@ -27,6 +27,13 @@ def main():
 
 # Function to read images from file
 def get_image_fnames(directory, recursive=False):
+	'''
+	Find paths to all .png files in a directory. Can check sub-directories.
+
+	ARGUMENTS:
+	directory -- A path to the target search directory. Type = string
+	recursive -- Optional. If True, searches through sub-directories of the target directory too. Type = bool; Default = False
+	'''
 	if recursive:
 		return glob(os.path.join(directory, "**", "*.png"), recursive=True)
 	else:
@@ -34,22 +41,53 @@ def get_image_fnames(directory, recursive=False):
 
 # Switch BGR to RGB, output independent channels
 def pre_process(img):
+	'''
+	Converts default cv2.imread BGR to RGB, outputs r, g, b channels separately
+
+	ARGUMENTS:
+	img -- Input image to pre-process. Type = numpy array
+	'''
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 	r, g, b = cv2.split(img)
 	return r,g,b
 
 # Label regions in a 2D image
 def label(channel):
+	'''
+	Returns labelled 2D array (single image channel), and number of labels
+
+	Wrapper for skimage.measure.label() function.
+	ARGUMENTS:
+	channel -- Single (2D) image channel to label. Type = numpy array
+	'''
 	labels, num_labels = measure.label(channel, return_num=True)
 	return labels, num_labels
 
 # Extract region properties from a labeled 2D image
 def properties(labelled_img):
+	'''
+	Returns region properties for each area in a labelled image
+
+	Wrapper for skimage.measure.regionprops() function.
+	ARGUMENTS:
+	labelled_img -- A 2D image array with regions labelled. Type = numpy array
+	'''
 	props = measure.regionprops(labelled_img)
 	return props
 
 # Delete random, noisy predicitions; determined by pixel area
 def del_noise(img, labelled_img, num_labels, props, THRESHOLD=2000):
+	'''
+	Delete noise from single channel images by discarding areas below a certain area
+
+	Any area below a certain area threshold is defined as unwanted noise. This area is converted to background (0)
+	ARGUMENTS:
+	img          -- Single channel image to be cleaned. Type = numpy array
+	labelled_img -- A labelled version of img. Must exactly correspond. Type = numpy array
+	num_labels   -- The number of labels in the labelled image. Type = int
+	props        -- List of property objects corresponding to the labelled image. Type = list
+	THRESHOLD    -- Minimum area (in pixels) which is considered a valid object (not noise). Type = int; Default = 2000
+	'''
 	img[functools.reduce(lambda x,y: x | y,
 		[labelled_img[:,:] == x+1 for x in range(0,num_labels) if props[x].area < THRESHOLD],
 		np.zeros(img.shape,dtype=bool))] = 0
@@ -57,6 +95,12 @@ def del_noise(img, labelled_img, num_labels, props, THRESHOLD=2000):
 
 # Fill in holes in an image
 def fill_holes(img):
+	'''
+	Fill in holes in a single channel image
+
+	ARGUMENTS:
+	img -- Input single channel image to have holes filled. Type = numpy array
+	'''
 	seed = np.copy(img)
 	seed[1:-1, 1:-1] = img.max()
 	mask = img
@@ -65,6 +109,14 @@ def fill_holes(img):
 
 # Dilate an input image
 def dilate(img, KERNEL=np.ones((5,5), np.uint8)):
+	'''
+	Perform a dilation on a single channel image to enlarge filled areas
+
+	Wrapper for cv2.dilate function
+	ARGUMENTS:
+	img -- Input single channel image to be dilated. Type = numpy array
+	KERNEL -- Dilation kernel which determines the size of the area extension. Type = numpy array; Default = 5x5 matrix of ones
+	'''
 	dilation = cv2.dilate(img,KERNEL)
 	return dilation
 
